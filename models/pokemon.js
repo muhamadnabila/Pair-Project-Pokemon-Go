@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     TrainerId: DataTypes.INTEGER
   }, {});
   Pokemon.associate = function(models) {
-    // associations can be defined here
+    Pokemon.belongsTo(models.Trainer)
   };
   return Pokemon;
 };

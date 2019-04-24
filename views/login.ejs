@@ -1,12 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Home</title>
+    <title>Register</title>
 </head>
+
 <body>
     <%- include('./partials/navbar') %>
+    <div class="container text-center">
+        <% if(locals.err) { %>
+        <%= locals.err %>
+        <% } %>
+        <form method="POST" action="/trainer/login"><br>
+            Username: <input type="text" name="username"><br>
+            Password: <input type="text" name="password"><br>
+            <button type="submit">Login</button>
+        </form>
+    </div>
 </body>
+
 </html>

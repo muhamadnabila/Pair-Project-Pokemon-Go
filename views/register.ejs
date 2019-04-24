@@ -1,15 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Register</title>
 </head>
+
 <body>
     <%- include('./partials/navbar') %>
-    <form method="POST" action="">
-
-    </form>
+    <div class="container text-center">
+        <% if(locals.err) { %>
+        <%= locals.err %>
+        <% } %>
+        <form method="POST" action="/trainer/register"><br>
+            First Name: <input type="text" name="firstName"><br>
+            Last Name: <input type="text" name="lastName"><br>
+            Gender:<select name="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select><br>
+            Username: <input type="text" name="username"><br>
+            Email: <input type="text" name="email"><br>
+            Password: <input type="text" name="password"><br>
+            <button type="submit">Register new trainer</button>
+        </form>
+    </div>
 </body>
+
 </html>
