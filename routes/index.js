@@ -1,7 +1,7 @@
 const route = require('express').Router()
-const {Pokemon , Trainer} = require('../models')
+const { Pokemon, Trainer } = require('../models')
 
-route.get('/',(req,res)=>{
+route.get('/', (req, res) => {
     res.render('index')
 })
 
