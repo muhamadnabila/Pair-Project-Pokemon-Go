@@ -1,0 +1,26 @@
+{
+  "name": "pair-project-pokemon-go",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muhamadnabila/Pair-Project-Pokemon-Go.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/muhamadnabila/Pair-Project-Pokemon-Go/issues"
+  },
+  "homepage": "https://github.com/muhamadnabila/Pair-Project-Pokemon-Go#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "express-session": "^1.16.1",
+    "pg": "^7.10.0",
+    "sequelize": "^5.7.4"
+  }
+}
