@@ -33,17 +33,18 @@
         </thead>
         <tbody>
             <%trainer.Pokemons.forEach((el,i)=>{ %>
-            <tr>
-                <th scope="row"><%=i+1%></th>
-                <td><%=el.name%></td>
-                <td><%=el.level%></td>
-                <td><%=el.species%></td>
-                <td><%=el.type%></td>
-                <td><%=el.hp%></td>
-                <td><%=el.attack%></td>
-                <td><%=el.defence%></td>
-                <td><%=el.speed%></td>
-                <td><a href="/trainer/trade/<%=el.id%>">put up</a></td>
+            <tr class=<%=getColor(el.type)%> </tr>
+            <th scope="row"><%=i+1%></th>
+            <td><%=el.name%></td>
+            <td><%=el.level%></td>
+            <td><%=el.species%></td>
+            <td><%=el.type%></td>
+            <td><%=el.hp%></td>
+            <td><%=el.attack%></td>
+            <td><%=el.defence%></td>
+            <td><%=el.speed%></td>
+            <!-- <td><a href="/trainer/trade/<%=el.id%>">put up</a></td> -->
+            <td><a href="/trainer/trade/<%=el.id%>" class="btn btn-outline-secondary" role="button" aria-pressed="true">Put Up</a></td>
             </tr>
             <% }) %>
         </tbody>
@@ -102,8 +103,8 @@
             <% let nomor = 1 %>
             <%let status = true%>
             <%lelang.forEach((el,i)=>{ %>
-                <%   if(el.PokemonIdFriend !== null && el.TrainerId == trainer.id && status == true){ %>
-                    <tr>
+            <%   if(el.PokemonIdFriend !== null && el.TrainerId == trainer.id && status == true){ %>
+            <tr>
                 <th scope="row"><%=nomor%></th>
                 <td><%=el.PokemonUser.name%></td>
                 <td><%=el.PokemonUser.level%></td>
@@ -113,12 +114,12 @@
                 <td><%=el.PokemonUser.attack%></td>
                 <td><%=el.PokemonUser.defence%></td>
                 <td><%=el.PokemonUser.speed%></td>
-                <td><a href="/trainer/trade/viewDetail/<%=el.PokemonIdUser%>">view</a></td>
+            <td><a href="/trainer/trade/viewDetail/<%=el.PokemonIdUser%>" class="btn btn-outline-secondary" role="button" aria-pressed="true">view</a></td>
                 <% nomor++ %>
             </tr>
             <%status = false%>
-                <%} %>
-                <% }) %>
+            <%} %>
+            <% }) %>
         </tbody>
     </table>
 

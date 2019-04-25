@@ -23,14 +23,12 @@ route.get('/trade', isAuth, (req, res) => {
     let pokemon = Pokemon.findAll()
     Promise.all([trainer, lelang, pokemon])
         .then(data => {
-            // res.send(data)
             let temp = []
             data[1].forEach(el => {
                 if (el.PokemonIdFriend !== null) {
                     temp.push(el.PokemonIdFriend)
                 }
             })
-            // console.log(temp)
             let poke = []
             data[2].forEach(elPoke => {
                 temp.forEach(elTemp => {
@@ -54,13 +52,10 @@ route.get('/trade/viewDetail/:idPokemonUser', (req, res) => {
         include: ['PokemonFriend']
     })
         .then(data => {
-            // res.send(data)
             res.render('viewDetailRequest', { data, idPokemon: req.params.idPokemonUser })
         })
 })
 route.get('/trade/viewDetail/acc/:idPokemonFriend/:idPokemonUser/:idFriend', (req, res) => {
-    // res.send(req.params.idPokemonUser)
-    // res.send(req.session)
     Pokemon.findByPk(req.params.idPokemonFriend)
         .then(data => {
             return data.update({
@@ -102,7 +97,6 @@ route.get('/bid', (req, res) => {
         include: ['PokemonUser']
     })
         .then(trade => {
-            // res.send({trade,trainerId : req.session.trainerId})
             res.render('bid', { trade, TrainerId: req.session.trainerId })
         })
 })
@@ -159,20 +153,20 @@ route.post('/login', (req, res) => {
     Trainer.findOne({
         where:
         {
-            username: req.body.username,
-            password: req.body.password
+            username: req.body.username
         }
     })
         .then(trainer => {
-            if (trainer) {
+            let checkPassword = trainer.comparePass(req.body.password) 
+            if (checkPassword) {
                 req.session.login = true
                 req.session.trainerId = trainer.id
                 Pokemon.findAll({ where: { TrainerId: trainer.id } })
-                    .then(myPokemons => {
+                .then(myPokemons => {
                         if (myPokemons.length == 0) res.render('myFirstPokemon')
                         else res.redirect('/')
                     })
-            }
+                }
             else throw new Error(`Account not found :(`)
         })
         .catch(err => {
@@ -268,7 +262,6 @@ route.get('/catch/:myPokemonId/:pokemonId', (req, res) => {
         })
         .then(([updatePokemon, createPokemon]) => {
             res.redirect('/trainer/myPokemon')
-            // res.send(`successfully catched ${createPokemon.species}!`)
         })
         .catch(err => {
             res.send(err)
@@ -301,7 +294,6 @@ route.get('/battle/:myPokemonId', (req, res) => {
         })
         .then(pokemon => {
             res.render('newPokemon', { pokemon })
-            // res.send(`${pokemon} gained experience!`)
         })
         .catch(err => {
             res.send(err)
@@ -328,4 +320,10 @@ route.post('/name/:pokemonId', (req, res) => {
         })
 })
 
+route.get('/profile',(req,res)=>{
+    Trainer.findByPk(req.session.trainerId)
+    .then(data =>{
+        res.render('profile',{data})
+    })
+})
 module.exports = route
