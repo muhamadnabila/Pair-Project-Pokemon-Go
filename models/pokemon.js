@@ -11,21 +11,19 @@ module.exports = (sequelize, DataTypes) => {
     speed: DataTypes.INTEGER,
     TrainerId: DataTypes.INTEGER
   }, {
-    hooks : {
-      beforeUpdate : (pokemon,option)=>{
-          if(option.PokemonIdUser){
-            return sequelize.models.Lelang.destroy(
-              {
-                where : {
-                  PokemonIdUser : option.PokemonIdUser
-                }
+      hooks: {
+        beforeUpdate: (pokemon, option) => {
+          if (option.PokemonIdUser) {
+            return sequelize.models.Lelang.destroy({
+              where: {
+                PokemonIdUser: option.PokemonIdUser
               }
-            )
+            })
           }
+        }
       }
-    }
-  });
-  Pokemon.associate = function(models) {
+    });
+  Pokemon.associate = function (models) {
     Pokemon.belongsTo(models.Trainer)
     // Pokemon.hasMany(models.Lelang,{foreignKey : 'PokemonIdUser'})
     // Pokemon.hasMany(models.Lelang, {as: 'PokemonUser', foreignKey: 'PokemonIdUser'})
