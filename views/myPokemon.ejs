@@ -8,13 +8,19 @@
     <title>My Pokemon</title>
 </head>
 
-<body>
+<body style="
+background-image: url(https://images7.alphacoders.com/592/592678.jpg);
+background-repeat: no-repeat;
+background-size: cover;
+">
     <%- include('./partials/navbar') %>
     <% if(locals.login === true) {%>
-    <table border="1">
-        <tr>
+
+
+    <table class="table">
+        <tr class="thead-dark">
             <th>No.</th>
-            <th>Name</th>
+            <th>Nickname</th>
             <th>Level</th>
             <th>Species</th>
             <th>Type</th>
@@ -22,11 +28,17 @@
             <th>Attack</th>
             <th>Defence</th>
             <th>Speed</th>
+            <th>Experience</th>
+            <th>Activities</th>
         </tr>
         <% for(let i = 0 ; i < pokemons.length ; i++) {%>
-        <tr>
+        <tr class="table-light">
             <td><%=i + 1%></td>
+            <% if(pokemons[i].name) { %>
             <td><%= pokemons[i].name%></td>
+            <% } else {%>
+            <td><a href="/trainer/name/<%- pokemons[i].id %>">Give Nickname!</a></td>
+            <% } %>
             <td><%= pokemons[i].level%></td>
             <td><%= pokemons[i].species%></td>
             <td><%= pokemons[i].type%></td>
@@ -34,12 +46,15 @@
             <td><%= pokemons[i].attack%></td>
             <td><%= pokemons[i].defence%></td>
             <td><%= pokemons[i].speed%></td>
+            <td><%= pokemons[i].experience%></td>
+            <td><a href="/trainer/wilds/<%- pokemons[i].id %>">Into the wilds!</a></td>
         </tr>
         <% } %>
     </table>
     <% } else {%>
-        <h3>Please <a href="/trainer/login">login</a> first!</h3>
+    <h3>Please <a href="/trainer/login">login</a> first!</h3>
     <% } %>
+
 </body>
 
 </html>

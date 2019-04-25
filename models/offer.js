@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.STRING
   }, {});
   Offer.associate = function(models) {
-    // associations can be defined here
   };
   return Offer;
 };

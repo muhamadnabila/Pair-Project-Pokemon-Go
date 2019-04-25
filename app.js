@@ -16,6 +16,8 @@ app.use(session({
     cookie: {}
 }))
 
+app.use(express.static('./resource'))
+
 app.use('/', index)
 app.use('/pokemon', pokemon)
 app.use('/trainer', trainer)
