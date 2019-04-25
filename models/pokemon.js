@@ -9,9 +9,27 @@ module.exports = (sequelize, DataTypes) => {
     attack: DataTypes.INTEGER,
     defence: DataTypes.INTEGER,
     speed: DataTypes.INTEGER,
-    TrainerId: DataTypes.INTEGER
-  }, {});
-  Pokemon.associate = function(models) {
+    experience: DataTypes.INTEGER,
+    TrainerId: DataTypes.INTEGER,
+    image: DataTypes.STRING,
+    backImage: DataTypes.STRING
+  }, {
+      hooks: {
+        afterUpdate: (pokemon, option) => {
+          if (pokemon.experience >= 100) {
+            pokemon.update({
+              level: pokemon.level + 1,
+              hp: pokemon.hp + Math.round(Math.random() * (100 - 200) + 200),
+              attack: pokemon.attack + Math.round(Math.random() * (20 - 10) + 10),
+              defence: pokemon.defence + Math.round(Math.random() * (20 - 10) + 10),
+              speed: pokemon.speed + Math.round(Math.random() * (10 - 5) + 5),
+              experience: 0
+            })
+          }
+        }
+      }
+    });
+  Pokemon.associate = function (models) {
     Pokemon.belongsTo(models.Trainer)
   };
   return Pokemon;

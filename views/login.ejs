@@ -8,18 +8,85 @@
     <title>Register</title>
 </head>
 
-<body>
+<style>
+    /* @font-face {
+        font-family: PokemonHollow;
+        src: url("../resource/PokemonHollow.ttf")
+    }
+
+    body {
+        font-family: PokemonHollow !important;
+    } */
+</style>
+
+<body style="
+background-image: url(https://images7.alphacoders.com/592/592678.jpg);
+background-repeat: no-repeat;
+background-size: cover;
+">
     <%- include('./partials/navbar') %>
     <div class="container text-center">
+        
+        <div class="row" style="
+    color:black; 
+    margin: 80px 250px 80px 250px; 
+    padding: 40px 80px 40px 80px;
+    border: 2px solid;
+    background-color:white ;
+    border-radius: 15px;
+    border-color: #3564AD;
+    ">
         <% if(locals.err) { %>
         <%= locals.err %>
         <% } %>
-        <form method="POST" action="/trainer/login"><br>
-            Username: <input type="text" name="username"><br>
-            Password: <input type="text" name="password"><br>
-            <button type="submit">Login</button>
-        </form>
-    </div>
+        <% if (locals.username) { %>
+        <%= locals.username + ` is now a certified trainer!` %>
+        <% } %>
+        <img src="https://cdn2.scratch.mit.edu/get_image/user/2428827_90x90.png">
+            <!-- <img src="http://clipart-library.com/image_gallery/n1582570.gif"> -->
+
+            <!-- <div class="container">
+                <div class="d-flex justify-content-center h-100">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Sign In</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST">
+                                <div class="input-group form-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="username" name="username">
+                                </div>
+                                <div class="input-group form-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                    </div>
+                                    <input type="password" class="form-control" placeholder="password" name="password">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="submit" value="Login" class="btn float-right login_btn">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-center links">
+                                Don't have an account?<a href="/register"> Sign Up</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <form method="POST" action="/trainer/login"><br>
+                Username: <input type="text" name="username"><br>
+                Password: <input type="password" name="password"><br>
+                <button type="submit" class="btn btn-danger background-color:black">Login</button>
+            </form>
+            <a href="/trainer/register">Don't have an account?</a>
+        </div>
 </body>
 
 </html>

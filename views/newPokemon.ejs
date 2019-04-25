@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Into the wilds!</title>
+</head>
+
+<body style="
+background-image: 
+url(/battleBackground.png);
+background-repeat: no-repeat;
+background-size: cover;
+position: relative;
+    ">
+    <%- include('./partials/navbar') %>
+    <img style="
+        position: absolute;
+        top: 21em;
+        right: 52em;
+        height: 17em;" src="<%- pokemon.image %>">
+    </div>
+
+    <h4 style=" text-align:center"><%- pokemon.species%> won!</h4>
+    <h4 style=" text-align:center"><a href="/trainer/myPokemon">Let's go back home!</a></h4>
+</body>
+
+</html>

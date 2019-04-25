@@ -8,36 +8,28 @@
     <title>Home</title>
 </head>
 
-<body>
+<body style="
+background-image: url(https://images7.alphacoders.com/592/592678.jpg);
+background-repeat: no-repeat;
+background-size: cover;
+">
     <%- include('./partials/navbar') %>
-    <% if(locals.login === true) {%>
-    <table border="1">
-        <tr>
-            <th>No.</th>
-            <th>Name</th>
-            <th>Level</th>
-            <th>Species</th>
-            <th>Type</th>
-            <th>Hp</th>
-            <th>Attack</th>
-            <th>Defence</th>
-            <th>Speed</th>
-        </tr>
-        <% for(let i = 0 ; i < pokemons.length ; i++) {%>
-        <tr>
-            <td><%=i + 1%></td>
-            <td><%= pokemons[i].name%></td>
-            <td><%= pokemons[i].level%></td>
-            <td><%= pokemons[i].species%></td>
-            <td><%= pokemons[i].type%></td>
-            <td><%= pokemons[i].hp%></td>
-            <td><%= pokemons[i].attack%></td>
-            <td><%= pokemons[i].defence%></td>
-            <td><%= pokemons[i].speed%></td>
-        </tr>
-        <% } %>
-    </table>
-    <% } %>
+
+    <div class="" style="
+    color:black; 
+    text-align: center;
+    margin: 80px 250px 80px 250px; 
+    padding: 40px 80px 40px 80px;
+    border: 2px solid;
+    background-color:white ;
+    border-radius: 15px;
+    border-color: #3564AD;
+    ">
+        <a href="/trainer/myPokemon"><img
+                src="https://cdn4.iconfinder.com/data/icons/longico/224/longico-23-512.png"></a><br>
+        <a href="/trainer/trade"><img src="https://img.icons8.com/color/420/fight-pokemon.png"></a><br>
+        <a href="/trainer/logout"><img src="https://pixelthieves.files.wordpress.com/2013/12/sadicon.png?w=800"></a>
+    </div>
 </body>
 
 </html>
