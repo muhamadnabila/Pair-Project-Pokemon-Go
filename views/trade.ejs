@@ -7,12 +7,14 @@
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css"> -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="main.js"></script>
     <%-include('./partials/navbar')%>
 </head>
 
 <body>
+    <h2>Your Pockemon</h2>
     <table class="table table-dark">
         <thead>
             <tr>
@@ -41,11 +43,86 @@
                 <td><%=el.attack%></td>
                 <td><%=el.defence%></td>
                 <td><%=el.speed%></td>
-                <td><a href="/trainer/trade/<%=el.id%>">trade</a></td>
+                <td><a href="/trainer/trade/<%=el.id%>">put up</a></td>
             </tr>
-           <% }) %>
+            <% }) %>
         </tbody>
     </table>
+    <h2>Your Bidding</h2>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Name</th>
+                <th scope="col">Level</th>
+                <th scope="col">Species</th>
+                <th scope="col">Type</th>
+                <th scope="col">Hp</th>
+                <th scope="col">Attack</th>
+                <th scope="col">Defence</th>
+                <th scope="col">Speed</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <%pokeReq.forEach((el,i)=>{ %>
+            <tr>
+                <th scope="row"><%=i+1%></th>
+                <td><%=el.name%></td>
+                <td><%=el.level%></td>
+                <td><%=el.species%></td>
+                <td><%=el.type%></td>
+                <td><%=el.hp%></td>
+                <td><%=el.attack%></td>
+                <td><%=el.defence%></td>
+                <td><%=el.speed%></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <h2>Your Request</h2>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Name</th>
+                <th scope="col">Level</th>
+                <th scope="col">Species</th>
+                <th scope="col">Type</th>
+                <th scope="col">Hp</th>
+                <th scope="col">Attack</th>
+                <th scope="col">Defence</th>
+                <th scope="col">Speed</th>
+                <th scope="col">Option</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            <% let nomor = 1 %>
+            <%let status = true%>
+            <%lelang.forEach((el,i)=>{ %>
+                <%   if(el.PokemonIdFriend !== null && el.TrainerId == trainer.id && status == true){ %>
+                    <tr>
+                <th scope="row"><%=nomor%></th>
+                <td><%=el.PokemonUser.name%></td>
+                <td><%=el.PokemonUser.level%></td>
+                <td><%=el.PokemonUser.species%></td>
+                <td><%=el.PokemonUser.type%></td>
+                <td><%=el.PokemonUser.hp%></td>
+                <td><%=el.PokemonUser.attack%></td>
+                <td><%=el.PokemonUser.defence%></td>
+                <td><%=el.PokemonUser.speed%></td>
+                <td><a href="/trainer/trade/viewDetail/<%=el.PokemonIdUser%>">view</a></td>
+                <% nomor++ %>
+            </tr>
+            <%status = false%>
+                <%} %>
+                <% }) %>
+        </tbody>
+    </table>
+
+
 </body>
 
 </html>

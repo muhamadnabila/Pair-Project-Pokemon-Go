@@ -1,29 +1,139 @@
 const route = require('express').Router()
-const { Pokemon, Trainer } = require('../models')
+const { Pokemon, Trainer, Lelang } = require('../models')
+const isAuth = require('../middlewares/isAuth')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 
 route.get('/', (req, res) => {
     res.render('index')
 })
-
-route.get('/trade', (req, res) => {
-    Trainer.findByPk(1, {
+// --------- trade -----------
+route.get('/trading', isAuth, (req, res) => {
+    res.render('trading')
+})
+route.get('/trade', isAuth, (req, res) => {
+    let trainer = Trainer.findByPk(req.session.trainerId, {
         include: Pokemon
     })
-        .then(trainer => {
-            res.render('trade', { trainer })
+    let lelang = Lelang.findAll(
+        {
+            include: ['PokemonUser']
+        }
+    )
+    let pokemon = Pokemon.findAll()
+    Promise.all([trainer, lelang, pokemon])
+        .then(data => {
+            // res.send(data)
+            let temp = []
+            data[1].forEach(el => {
+                if (el.PokemonIdFriend !== null) {
+                    temp.push(el.PokemonIdFriend)
+                }
+            })
+            // console.log(temp)
+            let poke = []
+            data[2].forEach(elPoke => {
+                temp.forEach(elTemp => {
+                    if (elTemp == elPoke.id && elPoke.TrainerId == data[0].id) {
+                        poke.push(elPoke)
+                    }
+                })
+            });
+            res.render('trade', { trainer: data[0], lelang: data[1], pokeReq: poke })
         })
         .catch(e => {
             res.send(e)
         })
 })
 
-route.get('/trade/:id', (req, res) => {
-    let idPokemon = req.params.id
-    let idTrainer =
-        res.redirect('/trainer/trade')
+route.get('/trade/viewDetail/:idPokemonUser', (req, res) => {
+    Lelang.findAll({
+        where: {
+            PokemonIdUser: req.params.idPokemonUser
+        },
+        include: ['PokemonFriend']
+    })
+        .then(data => {
+            // res.send(data)
+            res.render('viewDetailRequest', { data, idPokemon: req.params.idPokemonUser })
+        })
 })
+route.get('/trade/viewDetail/acc/:idPokemonFriend/:idPokemonUser/:idFriend', (req, res) => {
+    // res.send(req.params.idPokemonUser)
+    // res.send(req.session)
+    Pokemon.findByPk(req.params.idPokemonFriend)
+        .then(data => {
+            return data.update({
+                TrainerId: req.session.trainerId,
+
+            },
+                { PokemonIdUser: req.params.idPokemonUser })
+        }).then(() => {
+            return Pokemon.findByPk(req.params.idPokemonUser)
+        })
+        .then((data) => {
+            return data.update({
+                TrainerId: req.params.idFriend
+            })
+        })
+        .then(() => {
+            res.redirect('/trainer/trade')
+        })
+})
+route.get('/trade/:id', (req, res) => {
+    let PokemonId = req.params.id
+
+    Lelang.create({
+        PokemonIdUser: PokemonId,
+        PokemonIdFriend: null,
+        TrainerId: req.session.trainerId
+    }, {
+            PokemonId: PokemonId
+        })
+        .then(() => {
+            res.redirect('/trainer/trade')
+        })
+        .catch(e => {
+            res.send(e)
+        })
+})
+route.get('/bid', (req, res) => {
+    Lelang.findAll({
+        include: ['PokemonUser']
+    })
+        .then(trade => {
+            // res.send({trade,trainerId : req.session.trainerId})
+            res.render('bid', { trade, TrainerId: req.session.trainerId })
+        })
+})
+route.get('/bid/:PokemonIdUser/:TradeId', (req, res) => {
+    Trainer.findByPk(req.session.trainerId, {
+        include: Pokemon
+    })
+        .then(trainer => {
+            res.render('pokemonOptionBid', { trainer, PokemonIdUser: req.params.PokemonIdUser, TradeId: req.params.TradeId })
+        })
+        .catch(e => {
+            res.send(e)
+        })
+})
+route.get('/bid/:PokemonIdUser/:PokemonIdFriend/:TradeId', (req, res) => {
+    Lelang.findByPk(req.params.TradeId)
+        .then(trade => {
+            return Lelang.create({
+                PokemonIdUser: trade.PokemonIdUser,
+                PokemonIdFriend: req.params.PokemonIdFriend,
+                TrainerId: trade.TrainerId
+            })
+        })
+        .then(() => {
+            res.redirect('/trainer/bid')
+        })
+        .catch(err => {
+            res.send(err)
+        })
+})
+// ---------register----------
 route.get('/register', (req, res) => {
     res.locals.err = req.query.error
     res.render('register')
@@ -38,7 +148,7 @@ route.post('/register', (req, res) => {
             res.redirect(`/trainer/register?error=${err.message}`)
         })
 })
-
+// ----------login-------------
 route.get('/login', (req, res) => {
     res.locals.err = req.query.error
     res.locals.username = req.query.username
@@ -76,6 +186,7 @@ route.get('/logout', (req, res) => {
     res.redirect('/trainer/register')
 })
 
+// --------my pokemon --------------
 route.get('/myPokemon', (req, res) => {
     if (req.session.login) res.locals.login = req.session.login
     else res.locals.login = false
@@ -139,7 +250,7 @@ route.get('/catch/:myPokemonId/:pokemonId', (req, res) => {
     let pokemon = Pokemon.findOne({ where: { id: req.params.pokemonId } })
     Promise.all([myPokemon, pokemon])
         .then(([myPokemon, pokemon]) => {
-            let updatePokemon = myPokemon.update({ experience: myPokemon.experience + 15 }, {experience: 15})
+            let updatePokemon = myPokemon.update({ experience: myPokemon.experience + 15 }, { experience: 15 })
             let createPokemon = Pokemon.create({
                 level: pokemon.level,
                 species: pokemon.species,
@@ -165,7 +276,7 @@ route.get('/catch/:myPokemonId/:pokemonId', (req, res) => {
 })
 
 route.get('/test', (req, res) => {
-    
+
     Pokemon.findAll({
         where: {
             species: {
@@ -176,45 +287,45 @@ route.get('/test', (req, res) => {
         .then(pokemons => {
             res.send(pokemons)
         })
-        .catch(err =>{
+        .catch(err => {
             res.send(err)
         })
 })
 
-route.get('/battle/:myPokemonId', (req,res)=>{
+route.get('/battle/:myPokemonId', (req, res) => {
     Pokemon.findByPk(req.params.myPokemonId)
-    .then(pokemon =>{
-        return pokemon.update({experience: pokemon.experience + 25},{
-            experience: 25
+        .then(pokemon => {
+            return pokemon.update({ experience: pokemon.experience + 25 }, {
+                experience: 25
+            })
         })
-    })
-    .then(pokemon=>{
-        res.render('newPokemon', {pokemon})
-        // res.send(`${pokemon} gained experience!`)
-    })
-    .catch(err =>{
-        res.send(err)
-    })
+        .then(pokemon => {
+            res.render('newPokemon', { pokemon })
+            // res.send(`${pokemon} gained experience!`)
+        })
+        .catch(err => {
+            res.send(err)
+        })
 })
 
-route.get('/name/:pokemonId', (req,res)=>{
+route.get('/name/:pokemonId', (req, res) => {
     Pokemon.findByPk(req.params.pokemonId)
-    .then(pokemon =>{
-        res.render('giveName', {pokemon})
-    })
+        .then(pokemon => {
+            res.render('giveName', { pokemon })
+        })
 })
 
-route.post('/name/:pokemonId', (req,res)=>{
+route.post('/name/:pokemonId', (req, res) => {
     Pokemon.findByPk(req.params.pokemonId)
-    .then(pokemon =>{
-        return pokemon.update({name: req.body.name})
-    })
-    .then(pokemon =>{
-        res.redirect('/trainer/myPokemon')
-    })
-    .catch(err =>{
-        res.send(err)
-    })
+        .then(pokemon => {
+            return pokemon.update({ name: req.body.name })
+        })
+        .then(pokemon => {
+            res.redirect('/trainer/myPokemon')
+        })
+        .catch(err => {
+            res.send(err)
+        })
 })
 
 module.exports = route
