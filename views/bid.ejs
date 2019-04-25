@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="main.js"></script>
+    <%-include('./partials/navbar')%>
+</head>
+
+<body>
+
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Name</th>
+                <th scope="col">Level</th>
+                <th scope="col">Species</th>
+                <th scope="col">Type</th>
+                <th scope="col">Hp</th>
+                <th scope="col">Attack</th>
+                <th scope="col">Defence</th>
+                <th scope="col">Speed</th>
+                <th scope="col">Option</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <%if (trade !== []){%>
+            <%trade.forEach((el,i)=>{ %>
+            <%if(el.TrainerId !== TrainerId && el.PokemonIdFriend == null ){ %>
+            <tr>
+                <th scope="row"><%=i+1%></th>
+                <td><%=el.PokemonUser.name%></td>
+                <td><%=el.PokemonUser.level%></td>
+                <td><%=el.PokemonUser.species%></td>
+                <td><%=el.PokemonUser.type%></td>
+                <td><%=el.PokemonUser.hp%></td>
+                <td><%=el.PokemonUser.attack%></td>
+                <td><%=el.PokemonUser.defence%></td>
+                <td><%=el.PokemonUser.speed%></td>
+                <td><a href="/trainer/bid/<%=el.PokemonIdUser%>/<%=el.id%>">bid</a></td>
+            </tr>
+            <% } %>
+            <% }) %>
+            <%}else {%>
+            <tr>
+                <th scope="row">
+                    <empty>
+                </th>
+                <td>
+                    <-empty->
+                </td>
+                <td>
+                    <-empty->
+                </td>
+                <td>
+                    <-empty->
+                </td>
+                <td>
+                    <-empty->
+                </td>
+                <td>
+                    <-empty->
+                </td>
+                <td>
+                    <-empty->
+                </td>
+                <td>
+                    <-empty->
+                </td>
+                <td>
+                    <-empty->
+                </td>
+            </tr>
+            <%}%>
+            </tbody>
+        </table>
+
+
+</body>
+
+</html>
