@@ -32,8 +32,17 @@ module.exports = {
       speed: {
         type: Sequelize.INTEGER
       },
+      experience: {
+        type: Sequelize.INTEGER
+      },
       TrainerId: {
         type: Sequelize.INTEGER
+      },
+      image: {
+        type: Sequelize.TEXT
+      },
+      backImage: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,

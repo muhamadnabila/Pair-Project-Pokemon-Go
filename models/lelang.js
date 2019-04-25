@@ -20,11 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
   Lelang.associate = function(models) {
-    // associations can be defined here
     Lelang.belongsTo(models.Pokemon, {as : 'PokemonUser', foreignKey : 'PokemonIdUser' })
     Lelang.belongsTo(models.Pokemon, {as : 'PokemonFriend', foreignKey : 'PokemonIdFriend' })
-
-    // Lelang.belongsToMany(models.Pokemon, {through : models.Lelang,as : 'PokemonFriend', foreignKey : 'PokemonIdFriend' })
   };
   return Lelang;
 };

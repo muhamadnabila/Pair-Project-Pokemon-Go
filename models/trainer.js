@@ -1,4 +1,6 @@
 'use strict';
+const bcrypt = require('bcryptjs')
+const salt = bcrypt.genSaltSync(10)
 module.exports = (sequelize, DataTypes) => {
   const Trainer = sequelize.define('Trainer', {
     firstName: DataTypes.STRING,
@@ -39,7 +41,16 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     password: DataTypes.STRING
-  }, {});
+  }, {
+    hooks : {
+      beforeCreate : (user,option)=>{
+        user.password = bcrypt.hashSync(`${user.password}`, salt)
+      }
+    }
+  });
+  Trainer.prototype.comparePass = function(password){
+    return bcrypt.compareSync(password, this.password)
+  }
   Trainer.associate = function (models) {
     Trainer.hasMany(models.Pokemon)
   };
