@@ -187,11 +187,13 @@ route.get('/logout', (req, res) => {
 })
 
 // --------my pokemon --------------
-route.get('/myPokemon', (req, res) => {
+route.get('/myPokemon', isAuth, (req, res) => {
+    console.log(req.session);
+
     if (req.session.login) res.locals.login = req.session.login
-    else res.locals.login = false
+    // else res.locals.login = false
     if (req.session.trainerId) res.locals.trainerId = req.session.trainerId
-    else req.session.trainerId = null
+    // else req.session.trainerId = null
     Pokemon.findAll({
         where: {
             TrainerId: req.session.trainerId
@@ -267,7 +269,8 @@ route.get('/catch/:myPokemonId/:pokemonId', (req, res) => {
             return Promise.all([updatePokemon, createPokemon])
         })
         .then(([updatePokemon, createPokemon]) => {
-            res.redirect('/trainer/myPokemon')
+            res.render('catchNewPokemon', {pokemon: createPokemon})
+            // res.redirect('/trainer/myPokemon')
             // res.send(`successfully catched ${createPokemon.species}!`)
         })
         .catch(err => {
@@ -327,5 +330,72 @@ route.post('/name/:pokemonId', (req, res) => {
             res.send(err)
         })
 })
+
+route.post('/search/myPokemon', (req, res) => {
+    if (req.body.type == 'default') {
+        Pokemon.findAll({
+            where: {
+                TrainerId: req.session.trainerId,
+                [req.body.searchField]: {
+                    [Op.iLike]: `${req.body.searchValue}%`
+                }
+            },
+            order: [[req.body.orderField, req.body.orderValue]]
+        })
+            .then(pokemons => {
+                res.render('myPokemon', { pokemons })
+            })
+            .catch(err => {
+                res.send(err)
+            })
+    }
+    else {
+        Pokemon.findAll({
+            where: {
+                TrainerId: req.session.trainerId,
+                [req.body.searchField]: {
+                    [Op.iLike]: `${req.body.searchValue}%`
+                },
+                type: `${req.body.type}`
+            },
+            order: [[req.body.orderField, req.body.orderValue]]
+        })
+            .then(pokemons => {
+                res.render('myPokemon', { pokemons })
+            })
+            .catch(err => {
+                res.send(req.body)
+            })
+    }
+})
+
+// Pokemon.findAll({
+//     where: {
+//         TrainerId: req.session.trainerId,
+//         [req.body.searchField]: {
+//             [Op.iLike]: `${req.body.searchValue}%`
+//         },
+//         [req.body.categoryField]: `${req.body.categoryValue}`
+//     },
+//     order: [[`${req.body.orderField}`, `${req.body.orderValue}`]]
+// })
+
+// BACKUP
+// Pokemon.findAll({
+//     where: {
+//         TrainerId: req.session.trainerId,
+//         [req.body.searchField]: {
+//             [Op.iLike]: `${req.body.searchValue}%`
+//         }
+//     },
+//     order: ['id']
+// })
+// .then(pokemons =>{
+//     res.render('myPokemon', {pokemons})
+// })
+// .catch(err =>{
+//     res.send(err)
+// })
+
 
 module.exports = route
