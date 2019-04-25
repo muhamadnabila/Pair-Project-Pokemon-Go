@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- <script src="main.js"></script> -->
+    <%-include('./partials/navbar')%>
+</head>
+
+<body>
+    <h2>Your Pockemon Request</h2>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Name</th>
+                <th scope="col">Level</th>
+                <th scope="col">Species</th>
+                <th scope="col">Type</th>
+                <th scope="col">Hp</th>
+                <th scope="col">Attack</th>
+                <th scope="col">Defence</th>
+                <th scope="col">Speed</th>
+                <th scope="col">Option</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <%let number = 1%>
+            <%data.forEach((el,i)=>{ %>
+                <%if(el.PokemonFriend !== null){%>
+                    <tr>
+                        <th scope="row"><%=number%></th>
+                        <td><%=el.PokemonFriend.name%></td>
+                        <td><%=el.PokemonFriend.level%></td>
+                        <td><%=el.PokemonFriend.species%></td>
+                        <td><%=el.PokemonFriend.type%></td>
+                        <td><%=el.PokemonFriend.hp%></td>
+                        <td><%=el.PokemonFriend.attack%></td>
+                        <td><%=el.PokemonFriend.defence%></td>
+                        <td><%=el.PokemonFriend.speed%></td>
+                        <td><a href="/trainer/trade/viewDetail/acc/<%=el.PokemonFriend.id%>/<%=idPokemon%>/<%=el.PokemonFriend.TrainerId%>">accept</a></td>
+                    </tr>
+                    <%number++ %>
+                <%} %>
+            <% }) %>
+        </tbody>
+    </table>
+
+</body>
+
+</html>
