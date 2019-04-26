@@ -3,6 +3,38 @@ const { Pokemon, Trainer, Lelang } = require('../models')
 const isAuth = require('../middlewares/isAuth')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
+const multer = require('multer')
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'resource')
+    },
+    filename: function (req, file, cb) {
+      cb(null,  Date.now() + '.jpg')
+    }
+  })
+   
+var upload = multer({ storage: storage })
+route.get('/editProfile',(req,res)=>{
+    res.render('editProfile')
+})
+route.post('/editProfile',upload.single('avatar'),(req,res)=>{
+    let pathFoto =  req.file.path.slice(8)
+    let idTrainer = req.session.trainerId
+    Trainer.update(
+        {imageProfile:pathFoto},{
+         where : {
+             id : idTrainer
+         }   
+        }
+    )
+    .then(()=>{
+        res.redirect('/trainer/profile')
+    })
+    .catch((err)=>{
+        res.send(err)
+    })
+})
 
 route.get('/', (req, res) => {
     res.render('index')
@@ -418,9 +450,9 @@ route.post('/search/myPokemon', (req, res) => {
 
 route.get('/profile', (req, res) => {
     Trainer.findByPk(req.session.trainerId)
-        .then(data => {
-            res.render('profile', { data })
-        })
+    .then(profileData =>{
+        res.render('profile',{profileData})
+    })
 })
 
 // EEEEEEEEEDIIIIIIIIIIIIIIIIITTTT
