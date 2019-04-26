@@ -84,6 +84,62 @@
             </tbody>
         </table>
 
+        <!-- <form method="POST" action="/trainer/search/trade">
+            Search:
+            <select name="searchField" class="btn btn-warning background-color:black">
+                <option value="name">Nickname</option>
+                <option value="species">Species</option>
+            </select>
+            <input name="searchValue"><br>
+
+            Type:
+            <select name="type" class="btn btn-warning background-color:black">
+                <% let obj = {}%>
+                <% for(let i = 0 ; i < trade.length ; i++) {%>
+                <% if(!obj[trade[i].type]) { %>
+                <% obj[trade[i].type] = ''%>
+                <% } %>
+                <% } %>
+                <option value="default">default</option>
+                <% for(let key in obj){ %>
+                <option value="<%- key%>"><%- key%></option>
+                <% } %>
+            </select><br>
+
+            Stat: 
+            <select name="statField" class="btn btn-warning background-color:black">
+                <option value="hp">Health Point</option>
+                <option value="attack">Attack</option>
+                <option value="defence">Defence</option>
+                <option value="speed">Speed</option>
+            </select>
+            <select name="range" class="btn btn-warning background-color:black">
+                <option value="atLeast">At least</option>
+                <option value="atMost">At most</option>
+            </select>
+            <input type="number" name="amount" required="true"><br>
+            Order:
+            <select name="orderField" class="btn btn-warning background-color:black">
+                <option value="id">Default</option>
+                <option value="name">Nickname</option>
+                <option value="level">Level</option>
+                <option value="species">Species</option>
+                <option value="type">Type</option>
+                <option value="hp">Health Point</option>
+                <option value="attack">Attack</option>
+                <option value="defence">Defence</option>
+                <option value="speed">Speed</option>
+                <option value="experience">Experience</option>
+            </select>
+            <select name="orderValue" class="btn btn-warning background-color:black">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select><br>
+
+            <button type="reset" class="btn btn-danger background-color:black"><a
+                    href="/trainer/bid">Reset</a></button>
+            <button type="submit" class="btn btn-danger background-color:black">Search</button>
+        </form> -->
 
 </body>
 

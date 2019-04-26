@@ -32,14 +32,17 @@ position: relative;
             background-color:white ;
             border-radius: 15px;
             border-color: #3564AD;
+            display: flex;
+            justify-content: center;
             ">
-            <img src="https://media1.tenor.com/images/ff663d4cd4fb2f60a42223aa0bc15f2a/tenor.gif?itemid=5543978">
-            <h4>Your <%- pokemon.species%> won! </h4><br>
-
-
-
-
-            <h4>Let's go back <a href="/trainer/myPokemon">home</a> :)</h4>
+            <img
+                src="http://www.yellowjacketsocial.com/wp-content/uploads/2016/07/tumblr_static_transparent_pokeball_rolling_capture_zpsc7a8eb2f.gif">
+            <h4><%- pokemon.species%> is now your pokemon! </h4><br>
+            <h3>Now let's give it a nickname!</h3>
+            <form method="POST" action="/trainer/name/<%- pokemon.id %>">
+                <input name="name"><br>
+                <button type="submit" class="btn btn-danger background-color:black">Confirm nickname?</button>
+            </form>
 
         </div>
 
