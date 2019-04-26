@@ -53,7 +53,7 @@ module.exports = {
       },
       {
         name: null,
-        level: 4,
+        level: 8,
         species: "togepi",
         type: 'normal',
         hp: 2017,
@@ -69,7 +69,7 @@ module.exports = {
       },
       {
         name: null,
-        level: 4,
+        level: 5,
         species: "eevee",
         type: 'normal',
         hp: 1823,
@@ -80,6 +80,38 @@ module.exports = {
         TrainerId: null,
         image: '/eevee.gif',
         backImage: '/eeveeBack.gif',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: null,
+        level: 6,
+        species: "duskull",
+        type: 'ghost',
+        hp: 1523,
+        attack: 124,
+        defence: 214,
+        speed: 60,
+        experience: 0,
+        TrainerId: null,
+        image: '/duskull.gif',
+        backImage: '/duskullBack.gif',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: null,
+        level: 6,
+        species: "shelgon",
+        type: 'dragon',
+        hp: 2013,
+        attack: 214,
+        defence: 159,
+        speed: 77,
+        experience: 0,
+        TrainerId: null,
+        image: '/shelgon.gif',
+        backImage: '/shelgonBack.gif',
         createdAt: new Date(),
         updatedAt: new Date()
       }

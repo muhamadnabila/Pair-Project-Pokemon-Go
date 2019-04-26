@@ -51,9 +51,9 @@ background-size: cover;
 
     <div class="container text-center">
         <div class="row" style="
-        color:black; 
-        margin: 80px 250px 80px 250px; 
-        padding: 40px 80px 40px 80px;
+        color: black;
+        margin: 80px 250px 80px 250px;
+        padding: 40px 80px 40px 73px;
         border: 2px solid;
         background-color:white ;
         border-radius: 15px;
@@ -81,6 +81,18 @@ background-size: cover;
                     <% } %>
                 </select><br>
 
+                Stat: 
+                <select name="statField" class="btn btn-warning background-color:black">
+                    <option value="hp">Health Point</option>
+                    <option value="attack">Attack</option>
+                    <option value="defence">Defence</option>
+                    <option value="speed">Speed</option>
+                </select>
+                <select name="range" class="btn btn-warning background-color:black">
+                    <option value="atLeast">At least</option>
+                    <option value="atMost">At most</option>
+                </select>
+                <input type="number" name="amount" required="true"><br>
                 Order:
                 <select name="orderField" class="btn btn-warning background-color:black">
                     <option value="id">Default</option>

@@ -23,5 +23,8 @@ module.exports = {
       Example:
       return queryInterface.dropTable('users');
     */
+   return queryInterface.renameColumn('Lelangs', 'PokemonIdUser','TrainerId').then(()=>{
+    return queryInterface.renameColumn('Lelangs','PokemonIdFriend','PokemonId')
+  })
   }
 };

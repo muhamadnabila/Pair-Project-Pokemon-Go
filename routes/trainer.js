@@ -23,14 +23,12 @@ route.get('/trade', isAuth, (req, res) => {
     let pokemon = Pokemon.findAll()
     Promise.all([trainer, lelang, pokemon])
         .then(data => {
-            // res.send(data)
             let temp = []
             data[1].forEach(el => {
                 if (el.PokemonIdFriend !== null) {
                     temp.push(el.PokemonIdFriend)
                 }
             })
-            // console.log(temp)
             let poke = []
             data[2].forEach(elPoke => {
                 temp.forEach(elTemp => {
@@ -54,13 +52,10 @@ route.get('/trade/viewDetail/:idPokemonUser', (req, res) => {
         include: ['PokemonFriend']
     })
         .then(data => {
-            // res.send(data)
             res.render('viewDetailRequest', { data, idPokemon: req.params.idPokemonUser })
         })
 })
 route.get('/trade/viewDetail/acc/:idPokemonFriend/:idPokemonUser/:idFriend', (req, res) => {
-    // res.send(req.params.idPokemonUser)
-    // res.send(req.session)
     Pokemon.findByPk(req.params.idPokemonFriend)
         .then(data => {
             return data.update({
@@ -102,8 +97,11 @@ route.get('/bid', (req, res) => {
         include: ['PokemonUser']
     })
         .then(trade => {
-            // res.send({trade,trainerId : req.session.trainerId})
+            // res.send(trade)
             res.render('bid', { trade, TrainerId: req.session.trainerId })
+        })
+        .catch(err => {
+            res.send(err)
         })
 })
 route.get('/bid/:PokemonIdUser/:TradeId', (req, res) => {
@@ -159,12 +157,12 @@ route.post('/login', (req, res) => {
     Trainer.findOne({
         where:
         {
-            username: req.body.username,
-            password: req.body.password
+            username: req.body.username
         }
     })
         .then(trainer => {
-            if (trainer) {
+            let checkPassword = trainer.comparePass(req.body.password)
+            if (checkPassword) {
                 req.session.login = true
                 req.session.trainerId = trainer.id
                 Pokemon.findAll({ where: { TrainerId: trainer.id } })
@@ -239,8 +237,8 @@ route.get('/starter', (req, res) => {
                 backImage: pokemon.backImage
             })
         })
-        .then(() => {
-            res.redirect('/trainer/myPokemon')
+        .then(pokemon => {
+            res.render('catchNewPokemon', { pokemon })
         })
         .catch(err => {
             res.send(err)
@@ -269,7 +267,7 @@ route.get('/catch/:myPokemonId/:pokemonId', (req, res) => {
             return Promise.all([updatePokemon, createPokemon])
         })
         .then(([updatePokemon, createPokemon]) => {
-            res.render('catchNewPokemon', {pokemon: createPokemon})
+            res.render('catchNewPokemon', { pokemon: createPokemon })
             // res.redirect('/trainer/myPokemon')
             // res.send(`successfully catched ${createPokemon.species}!`)
         })
@@ -278,22 +276,22 @@ route.get('/catch/:myPokemonId/:pokemonId', (req, res) => {
         })
 })
 
-route.get('/test', (req, res) => {
+// route.get('/test', (req, res) => {
 
-    Pokemon.findAll({
-        where: {
-            species: {
-                [Op.like]: 'squirt%'
-            }
-        }
-    })
-        .then(pokemons => {
-            res.send(pokemons)
-        })
-        .catch(err => {
-            res.send(err)
-        })
-})
+//     Pokemon.findAll({
+//         where: {
+//             species: {
+//                 [Op.like]: '%charmander%'
+//             }
+//         }
+//     })
+//         .then(pokemons => {
+//             res.send(pokemons)
+//         })
+//         .catch(err => {
+//             res.send(err)
+//         })
+// })
 
 route.get('/battle/:myPokemonId', (req, res) => {
     Pokemon.findByPk(req.params.myPokemonId)
@@ -304,7 +302,6 @@ route.get('/battle/:myPokemonId', (req, res) => {
         })
         .then(pokemon => {
             res.render('newPokemon', { pokemon })
-            // res.send(`${pokemon} gained experience!`)
         })
         .catch(err => {
             res.send(err)
@@ -312,6 +309,7 @@ route.get('/battle/:myPokemonId', (req, res) => {
 })
 
 route.get('/name/:pokemonId', (req, res) => {
+    // res.send(req.params.pokemonId)
     Pokemon.findByPk(req.params.pokemonId)
         .then(pokemon => {
             res.render('giveName', { pokemon })
@@ -333,69 +331,201 @@ route.post('/name/:pokemonId', (req, res) => {
 
 route.post('/search/myPokemon', (req, res) => {
     if (req.body.type == 'default') {
-        Pokemon.findAll({
-            where: {
-                TrainerId: req.session.trainerId,
-                [req.body.searchField]: {
-                    [Op.iLike]: `${req.body.searchValue}%`
-                }
-            },
-            order: [[req.body.orderField, req.body.orderValue]]
-        })
-            .then(pokemons => {
-                res.render('myPokemon', { pokemons })
+        if (req.body.range == 'atLeast') {
+            Pokemon.findAll({
+                where: {
+                    TrainerId: req.session.trainerId,
+                    [req.body.searchField]: {
+                        [Op.iLike]: `%${req.body.searchValue}%`
+                    },
+                    [req.body.statField]: {
+                        [Op.gte]: req.body.amount
+                    }
+                },
+                order: [[req.body.orderField, req.body.orderValue]]
             })
-            .catch(err => {
-                res.send(err)
+                .then(pokemons => {
+                    res.render('myPokemon', { pokemons })
+                })
+                .catch(err => {
+                    res.send(req.body)
+                })
+        } else if (req.body.range == 'atMost') {
+            Pokemon.findAll({
+                where: {
+                    TrainerId: req.session.trainerId,
+                    [req.body.searchField]: {
+                        [Op.iLike]: `%${req.body.searchValue}%`
+                    },
+                    [req.body.statField]: {
+                        [Op.lte]: req.body.amount
+                    }
+                },
+                order: [[req.body.orderField, req.body.orderValue]]
             })
+                .then(pokemons => {
+                    res.render('myPokemon', { pokemons })
+                })
+                .catch(err => {
+                    res.send(req.body)
+                })
+        }
     }
     else {
-        Pokemon.findAll({
-            where: {
-                TrainerId: req.session.trainerId,
-                [req.body.searchField]: {
-                    [Op.iLike]: `${req.body.searchValue}%`
+        if (req.body.range == 'atLeast') {
+            Pokemon.findAll({
+                where: {
+                    TrainerId: req.session.trainerId,
+                    [req.body.searchField]: {
+                        [Op.iLike]: `%${req.body.searchValue}%`
+                    },
+                    type: `${req.body.type}`,
+                    [req.body.statField]: {
+                        [Op.gte]: req.body.amount
+                    }
                 },
-                type: `${req.body.type}`
-            },
-            order: [[req.body.orderField, req.body.orderValue]]
-        })
-            .then(pokemons => {
-                res.render('myPokemon', { pokemons })
+                order: [[req.body.orderField, req.body.orderValue]]
             })
-            .catch(err => {
-                res.send(req.body)
+                .then(pokemons => {
+                    res.render('myPokemon', { pokemons })
+                })
+                .catch(err => {
+                    res.send(err)
+                })
+        } else if (req.body.range == 'atMost') {
+            Pokemon.findAll({
+                where: {
+                    TrainerId: req.session.trainerId,
+                    [req.body.searchField]: {
+                        [Op.iLike]: `%${req.body.searchValue}%`
+                    },
+                    type: `${req.body.type}`,
+                    [req.body.statField]: {
+                        [Op.lte]: req.body.amount
+                    }
+                },
+                order: [[req.body.orderField, req.body.orderValue]]
             })
+                .then(pokemons => {
+                    res.render('myPokemon', { pokemons })
+                })
+                .catch(err => {
+                    res.send(err)
+                })
+        }
     }
 })
 
-// Pokemon.findAll({
-//     where: {
-//         TrainerId: req.session.trainerId,
-//         [req.body.searchField]: {
-//             [Op.iLike]: `${req.body.searchValue}%`
-//         },
-//         [req.body.categoryField]: `${req.body.categoryValue}`
-//     },
-//     order: [[`${req.body.orderField}`, `${req.body.orderValue}`]]
+route.get('/profile', (req, res) => {
+    Trainer.findByPk(req.session.trainerId)
+        .then(data => {
+            res.render('profile', { data })
+        })
+})
+
+// EEEEEEEEEDIIIIIIIIIIIIIIIIITTTT
+
+// route.get('/bid', (req, res) => {
+//     Lelang.findAll({
+//         include: ['PokemonUser']
+//     })
+//         .then(trade => {
+//             res.render('bid', { trade, TrainerId: req.session.trainerId })
+//         })
+//         .catch(err => {
+//             res.send(err)
+//         })
 // })
 
-// BACKUP
-// Pokemon.findAll({
-//     where: {
-//         TrainerId: req.session.trainerId,
-//         [req.body.searchField]: {
-//             [Op.iLike]: `${req.body.searchValue}%`
+
+// route.post('/search/trade', (req, res) => {
+//     // res.send(req.body)
+//     if (req.body.type == 'default') {
+//         if (req.body.range == 'atLeast') {
+//             Lelang.findAll({
+//                 include: ['PokemonUser']
+//             }, {
+//                     where: {
+//                         [req.body.searchField]: {
+//                             [Op.iLike]: `%${req.body.searchValue}%`
+//                         },
+//                         [req.body.statField]: {
+//                             [Op.gte]: req.body.amount
+//                         }
+//                     },
+//                     order: [[req.body.orderField, req.body.orderValue]]
+//                 })
+//                 .then(trade => {
+//                     res.send(trade)
+//                     // res.render('bid', { trade, TrainerId: req.session.trainerId })
+//                 })
+//                 .catch(err => {
+//                     res.send(err)
+//                 })
+//         } else if (req.body.range == 'atMost') {
+//             Lelang.findAll({
+//                 include: ['PokemonUser']
+//             }, {
+//                     where: {
+//                         [req.body.searchField]: {
+//                             [Op.iLike]: `%${req.body.searchValue}%`
+//                         },
+//                         [req.body.statField]: {
+//                             [Op.lte]: req.body.amount
+//                         }
+//                     },
+//                     order: [[req.body.orderField, req.body.orderValue]]
+//                 })
+//                 .then(trade => {
+//                     res.send(trade)
+//                     // res.render('bid', { trade, TrainerId: req.session.trainerId })
+//                 })
+//                 .catch(err => {
+//                     res.send(err)
+//                 })
 //         }
-//     },
-//     order: ['id']
+//     }
 // })
-// .then(pokemons =>{
-//     res.render('myPokemon', {pokemons})
-// })
-// .catch(err =>{
-//     res.send(err)
-// })
-
-
+//eeeeeeeeeedit
+// if (req.body.type == 'default') {
+//     if (req.body.range == 'atLeast') {
+//         Pokemon.findAll({
+//             where: {
+//                 TrainerId: req.session.trainerId,
+//                 [req.body.searchField]: {
+//                     [Op.iLike]: `%${req.body.searchValue}%`
+//                 },
+//                 [req.body.statField]: {
+//                     [Op.gte]: req.body.amount
+//                 }
+//             },
+//             order: [[req.body.orderField, req.body.orderValue]]
+//         })
+//             .then(pokemons => {
+//                 res.render('myPokemon', { pokemons })
+//             })
+//             .catch(err => {
+//                 res.send(req.body)
+//             })
+//     } else if (req.body.range == 'atMost') {
+//         Pokemon.findAll({
+//             where: {
+//                 TrainerId: req.session.trainerId,
+//                 [req.body.searchField]: {
+//                     [Op.iLike]: `%${req.body.searchValue}%`
+//                 },
+//                 [req.body.statField]: {
+//                     [Op.lte]: req.body.amount
+//                 }
+//             },
+//             order: [[req.body.orderField, req.body.orderValue]]
+//         })
+//             .then(pokemons => {
+//                 res.render('myPokemon', { pokemons })
+//             })
+//             .catch(err => {
+//                 res.send(req.body)
+//             })
+//     }
+// }
 module.exports = route
