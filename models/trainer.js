@@ -40,11 +40,13 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    imageProfile : DataTypes.STRING
   }, {
     hooks : {
-      beforeCreate : (user,option)=>{
-        user.password = bcrypt.hashSync(`${user.password}`, salt)
+      beforeCreate : (trainer,option)=>{
+        trainer.password = bcrypt.hashSync(`${trainer.password}`, salt)
+        trainer.imageProfile = '/default.jpg'
       }
     }
   });
